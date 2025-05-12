@@ -1,7 +1,7 @@
 import pygame
 
 from constants import Color, Screen
-from pong_game import PongGame
+from pong_game.game import PongGame
 
 
 def main():
@@ -22,6 +22,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+        game.update()
 
         updatable.update(dt)
 
