@@ -24,6 +24,7 @@ class Paddle(Rectangle):
         super().__init__(center, Game.PADDLE_WIDTH, Game.PADDLE_HEIGHT, *groups)
         self.is_player = is_player
         self.velocity = pygame.Vector2(0, 0)
+        self.bouncing_ball = False
 
     def update(self, dt):
         self.make_velocity()

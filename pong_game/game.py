@@ -36,7 +36,7 @@ class PongGame:
     def _ball_update(self):
         self._ball_check_wall_collision()
         self._ball_check_paddle_collision(self._paddle1)
-        # self._ball_check_rect_collision(self._paddle2)
+        self._ball_check_paddle_collision(self._paddle2)
 
     def _ball_check_wall_collision(self):
         x, y = self._ball.center
@@ -57,21 +57,18 @@ class PongGame:
         1. Check the distance
         2. if distance < radius : bounce!
         3. if ball center is inside the rect, throw to the opposite side!
+        4. use bouncing_ball flag at paddle
         """
         x, y = self._ball.center
         radius = self._ball.radius
         distance = paddle.get_distance(x, y)
         if paddle.is_inside(x, y):
             distance = 0
-
         collision_detected = distance <= radius
         if collision_detected:  # collision detected
-            if self._ball.is_bouncing:
+            if paddle.bouncing_ball:
                 return
-            self._ball.is_bouncing = True
-            if distance == 0:
-                self._ball.velocity *= -1
-                return
+            paddle.bouncing_ball = True
             normal = pygame.Vector2(0, 0)
             if abs(x - paddle.left) <= radius:
                 normal += Normal.LEFT
@@ -85,8 +82,8 @@ class PongGame:
                 normal.normalize()
                 self._ball.bounce(normal)
         else:
-            if self._ball.is_bouncing:
-                self._ball.is_bouncing = False
+            if paddle.bouncing_ball:
+                paddle.bouncing_ball = False
 
     def _get_updatable_group(self):
         return (
