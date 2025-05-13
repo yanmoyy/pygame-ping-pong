@@ -20,6 +20,7 @@ class Ball(Circle):
     ) -> None:
         super().__init__(center, Game.BALL_RADIUS, *groups)
         self.velocity = velocity
+        self.is_bouncing = False
 
     def update(self, dt: float):
         self.center += self.velocity * dt

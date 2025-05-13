@@ -10,7 +10,7 @@ from sprites import Circle
 
 class TestGame(unittest.TestCase):
     def create_game(self):
-        game = PongGame(Group(), Group(), Group())
+        game = PongGame(Group(), Group())
         return game
 
     def test_update_ball(self):

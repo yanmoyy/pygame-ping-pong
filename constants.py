@@ -17,8 +17,9 @@ class Color:
 class Game:
     PADDING = 50
 
-    PADDLE_HEIGHT = 70
-    PADDLE_WIDTH = 10
+    PADDLE_HEIGHT = 100
+    PADDLE_WIDTH = 30
+    PADDLE_SPEED = 150
 
     BALL_RADIUS = 5
     BALL_MIN_SPEED = 200

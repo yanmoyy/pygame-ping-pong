@@ -14,9 +14,7 @@ def main():
 
     drawable = pygame.sprite.Group()
     updatable = pygame.sprite.Group()
-    collidable = pygame.sprite.Group()
-
-    game = PongGame(drawable, updatable, collidable)
+    game = PongGame(drawable, updatable)
 
     while running:
         for event in pygame.event.get():
