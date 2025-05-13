@@ -15,7 +15,7 @@ class Color:
 
 
 class Game:
-    PADDING = 50
+    CONSTRAINT_PADDING = 30
 
     PADDLE_HEIGHT = 100
     PADDLE_WIDTH = 30
@@ -23,3 +23,5 @@ class Game:
 
     BALL_RADIUS = 5
     BALL_MIN_SPEED = 200
+
+    MAX_SCORE = 5

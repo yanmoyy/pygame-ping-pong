@@ -1,5 +1,4 @@
-from enum import Enum
-from typing import Tuple
+from typing import Optional, Tuple
 
 import pygame
 
@@ -18,6 +17,7 @@ class Paddle(Rectangle):
     def __init__(
         self,
         center: Tuple[int, int],
+        constraint_rect: pygame.Rect,
         *groups: pygame.sprite.Group,
         is_player: bool,
     ) -> None:
@@ -25,10 +25,22 @@ class Paddle(Rectangle):
         self.is_player = is_player
         self.velocity = pygame.Vector2(0, 0)
         self.bouncing_ball = False
+        self.constraint_rect = constraint_rect
 
     def update(self, dt):
         self.make_velocity()
-        self.center += self.velocity * dt
+        new_center = self.center + self.velocity * dt
+        half_height = self.height / 2
+        half_width = self.width / 2
+        new_x = max(
+            self.constraint_rect.left + half_width,
+            min(new_center.x, self.constraint_rect.right - half_width),
+        )
+        new_y = max(
+            self.constraint_rect.top + half_height,
+            min(new_center.y, self.constraint_rect.bottom - half_height),
+        )
+        self.center = pygame.Vector2(new_x, new_y)
 
     def make_velocity(self):
         self.velocity = pygame.Vector2(0, 0)
@@ -56,3 +68,6 @@ class Paddle(Rectangle):
                 self.velocity += Direction.UP
             case Direction.DOWN:
                 self.velocity += Direction.DOWN
+
+    def set_constraint(self, constraint_rect: pygame.Rect):
+        self.constraint_rect = constraint_rect

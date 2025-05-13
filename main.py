@@ -27,6 +27,8 @@ def main():
 
         screen.fill(Color.BACK_GROUND_BLACK)
 
+        game.draw(screen)
+
         for obj in drawable:
             obj.draw(screen)
 
