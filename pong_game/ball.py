@@ -1,14 +1,7 @@
-from enum import Enum
-
 import pygame
 
 from constants import Game
 from sprites import Circle
-
-
-class BounceType(Enum):
-    PADDLE = "paddle"
-    WALL = "wall"
 
 
 class Ball(Circle):
