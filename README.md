@@ -23,3 +23,4 @@
 4. Additional Angle & Speed Increment
    - Add additional angle with hit position y, clamp by each 60 degrees
    - speed increment by each hit
+![Uploading ScreenRecording2025-05-14at4.06.44PM-ezgif.com-video-to-gif-converter.gif…]()
