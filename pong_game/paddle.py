@@ -18,11 +18,11 @@ class Paddle(Rectangle):
         self,
         center: Tuple[int, int],
         constraint_rect: pygame.Rect,
+        player_id: str,
         *groups: pygame.sprite.Group,
-        is_player: bool,
     ) -> None:
         super().__init__(center, Game.PADDLE_WIDTH, Game.PADDLE_HEIGHT, *groups)
-        self.is_player = is_player
+        self.player_id = player_id
         self.velocity = pygame.Vector2(0, 0)
         self.bouncing_ball = False
         self.constraint_rect = constraint_rect
@@ -44,7 +44,7 @@ class Paddle(Rectangle):
 
     def make_velocity(self):
         self.velocity = pygame.Vector2(0, 0)
-        if self.is_player:
+        if self.player_id == "1":
             keys = pygame.key.get_pressed()
             if keys[pygame.K_w]:
                 self.move(Direction.UP)
@@ -54,6 +54,17 @@ class Paddle(Rectangle):
                 self.move(Direction.DOWN)
             if keys[pygame.K_d]:
                 self.move(Direction.RIGHT)
+        elif self.player_id == "2":
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_UP]:
+                self.move(Direction.UP)
+            if keys[pygame.K_LEFT]:
+                self.move(Direction.LEFT)
+            if keys[pygame.K_DOWN]:
+                self.move(Direction.DOWN)
+            if keys[pygame.K_RIGHT]:
+                self.move(Direction.RIGHT)
+
         if self.velocity != (0, 0):
             self.velocity.normalize()
         self.velocity *= Game.PADDLE_SPEED

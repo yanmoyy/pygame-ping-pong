@@ -1,7 +1,7 @@
 import pygame
+from sprites import Circle
 
 from constants import Game
-from sprites import Circle
 
 
 class Ball(Circle):

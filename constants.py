@@ -22,6 +22,6 @@ class Game:
     PADDLE_SPEED = 150
 
     BALL_RADIUS = 5
-    BALL_MIN_SPEED = 200
+    BALL_MIN_SPEED = 300
 
     MAX_SCORE = 5

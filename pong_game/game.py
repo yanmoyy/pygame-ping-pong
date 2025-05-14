@@ -1,3 +1,5 @@
+import math
+
 import pygame
 from pygame.sprite import Group
 
@@ -30,6 +32,7 @@ class PongGame:
         self.font = pygame.font.Font(None, 74)
         self.game_over = False
         self.winner = None
+        self._ball_speed = Game.BALL_MIN_SPEED
         self._init_objects()
 
     def update(self):
@@ -117,6 +120,7 @@ class PongGame:
             if paddle.bouncing_ball:
                 return
             paddle.bouncing_ball = True
+            self._ball_increase_speed()
             normal = pygame.Vector2(0, 0)
             if abs(x - paddle.left) <= radius:
                 normal += Normal.LEFT
@@ -129,9 +133,57 @@ class PongGame:
             if normal != (0, 0):
                 normal.normalize()
                 self._ball.bounce(normal)
+                if normal.x == 1 or normal.x == -1:
+                    self._ball_modify_angle_by_position(
+                        (y - paddle.top) / paddle.height, normal.x == 1
+                    )
         else:
             if paddle.bouncing_ball:
                 paddle.bouncing_ball = False
+
+    def _ball_increase_speed(self):
+        print(self._ball_speed)
+        self._ball_speed += 30
+        self._ball.velocity = self._ball.velocity.normalize() * self._ball_speed
+
+    def _ball_modify_angle_by_position(self, hit_position: float, is_right: bool):
+        """
+        Adjust the ball's velocity angle based on hit position.
+        - hit_position: 0 (top) to 1 (bottom)
+        - is_right: True for rightward bounce (Player 1), False for leftward (Player 2)
+        - Steps: Get current angle, add additional angle with sign constraint, clamp, apply
+        """
+        direction = 1 if is_right else -1
+
+        current_angle = math.atan2(self._ball.velocity.y, self._ball.velocity.x)
+
+        additional_angle = (hit_position - 0.5) * math.radians(60) * direction * 2
+        new_angle = current_angle + additional_angle
+
+        max_degree = 60
+        if direction == 1:  # Player 1, rightward
+            max_angle = math.radians(max_degree)  # 60°
+            min_angle = -max_angle  # -60°
+            if hit_position <= 0.5:  # Top: negative (right-up)
+                if new_angle <= math.radians(0):
+                    new_angle = max(min_angle, new_angle)
+            else:  # Bottom: positive (right-down)
+                if new_angle >= math.radians(0):
+                    new_angle = min(max_angle, new_angle)  # [0°, 60°]
+        else:  # Player 2, leftward
+            if hit_position <= 0.5:  # (left-up)
+                if new_angle > math.radians(-180):
+                    max_angle = math.radians(-180 + max_degree)  # -120°
+                    new_angle = min(max_angle, new_angle)
+            else:  # Bottom: (left-down)
+                if new_angle < math.radians(180):
+                    min_angle = math.radians(180 - max_degree)  # 120°
+                    new_angle = max(min_angle, new_angle)
+
+        speed = self._ball_speed
+        self._ball.velocity = (
+            pygame.Vector2(math.cos(new_angle), math.sin(new_angle)) * speed
+        )
 
     def _show_game_over_message(self, surface: pygame.Surface):
         """Display game over message with winner and reset instructions."""
@@ -166,13 +218,13 @@ class PongGame:
             Game.CONSTRAINT_PADDING + Game.PADDLE_WIDTH // 2,
             center_y,
             paddle1_constraint,
-            is_player=True,
+            player_id="1",
         )
         self._paddle2 = self._build_paddle(
             int(self.width) - Game.CONSTRAINT_PADDING - Game.PADDLE_WIDTH // 2,
             center_y,
             paddle2_constraint,
-            is_player=False,
+            player_id="2",
         )
         self._set_players_color()
         self._ball = self._build_ball(center_x, center_y)
@@ -182,19 +234,19 @@ class PongGame:
         center_x: int,
         center_y: int,
         constraint_rect: pygame.Rect,
-        is_player: bool,
+        player_id: str,
     ) -> Paddle:
         return Paddle(
             (center_x, center_y),
             constraint_rect,
+            player_id,
             *self._get_updatable_group(),
-            is_player=is_player,
         )
 
     def _build_ball(self, center_x: float, center_y: float) -> Ball:
         return Ball(
             pygame.Vector2(center_x, center_y),
-            pygame.Vector2(-Game.BALL_MIN_SPEED, Game.BALL_MIN_SPEED),
+            pygame.Vector2(-1, 1).normalize() * Game.BALL_MIN_SPEED,
             *self._get_updatable_group(),
         )
 
@@ -206,7 +258,8 @@ class PongGame:
         center_x = self.width // 2
         center_y = self.height // 2
         self._ball.center = pygame.Vector2(center_x, center_y)
-        self._ball.velocity = pygame.Vector2(-Game.BALL_MIN_SPEED, Game.BALL_MIN_SPEED)
+        self._ball.velocity = pygame.Vector2(-1, 1).normalize() * Game.BALL_MIN_SPEED
+        self._ball_speed = Game.BALL_MIN_SPEED
 
     def _stop_ball(self):
         self._ball.velocity = pygame.Vector2(0, 0)
