@@ -142,7 +142,6 @@ class PongGame:
                 paddle.bouncing_ball = False
 
     def _ball_increase_speed(self):
-        print(self._ball_speed)
         self._ball_speed += 30
         self._ball.velocity = self._ball.velocity.normalize() * self._ball_speed
 
