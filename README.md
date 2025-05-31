@@ -2,9 +2,6 @@
 
 - boot.dev personal project (20~30 hours)
 
-> My intention was building web-socket 1vs1 game, but
-> it was too hard to finish basic ping pong logic in 30 hours...
-
 1. Create Base classes (rectangle, circle)
 2. Game Logic
 
@@ -25,3 +22,5 @@
    - speed increment by each hit
 
 ![Image](https://github.com/user-attachments/assets/ea2f119a-928d-404b-8046-06348d672e01)
+
+## Contributing
